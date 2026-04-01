@@ -266,6 +266,10 @@ async function chargerDonnees() {
     legendeRelations.style.display   = 'flex';
     legendeCategories.style.display  = 'flex';
 
+    // Diagnostic : affiche les terminaux résolus dans la console du navigateur
+    console.log('Machines chargées :', listeMachines.map(m => m.id));
+    console.log('Exemple services (terminals) :');
+    listeServices.slice(0, 4).forEach(s => console.log(' -', s.name, '→', s.terminals));
     calculerPositions();
     dessinerGraphe();
 
@@ -512,7 +516,7 @@ function dessinerGraphe() {
 
     // Emoji de la machine (dessiné après la forme → premier plan)
     const tailleEmoji = Math.max(16, Math.round(22 * Math.min(niveauZoom, 1.4)));
-    contexteDessin.font         = `${tailleEmoji}px serif`;
+    contexteDessin.font         = `${tailleEmoji}px serif, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji`;
     contexteDessin.textAlign    = 'center';
     contexteDessin.textBaseline = 'middle';
     contexteDessin.fillText(machine.emoji, position.x, position.y);
@@ -536,7 +540,7 @@ function dessinerGraphe() {
 
     // Emoji du service (dessiné après le cercle → premier plan, couleurs vives)
     const tailleEmoji = Math.max(13, Math.round(rayonCercle * 0.88));
-    contexteDessin.font         = `${tailleEmoji}px serif`;
+    contexteDessin.font         = `${tailleEmoji}px serif, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji`;
     contexteDessin.textAlign    = 'center';
     contexteDessin.textBaseline = 'middle';
     contexteDessin.fillText(service.emoji, position.x, position.y + 1);
