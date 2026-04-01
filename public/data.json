@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-01T17:47:41.524Z",
+  "generatedAt": "2026-04-01T18:54:04.452Z",
   "machines": [
     {
       "id": "pc",
@@ -24,16 +24,6 @@
     }
   ],
   "services": [
-    {
-      "id": "rec2shze7KtZq1hK9",
-      "name": "PC portable",
-      "url": "",
-      "category": "Autre",
-      "description": "Machine physique",
-      "color": "#888",
-      "emoji": "💻",
-      "terminals": []
-    },
     {
       "id": "rec59Ra7HHa9xOlL0",
       "name": "Messagerie Instantannée",
@@ -113,16 +103,6 @@
       "terminals": []
     },
     {
-      "id": "recNPjCtDGPptUCa1",
-      "name": "Smart TV",
-      "url": "",
-      "category": "Autre",
-      "description": "Machine Physique",
-      "color": "#888",
-      "emoji": "📺",
-      "terminals": []
-    },
-    {
       "id": "recSG4kjHmjYiRmbH",
       "name": "Podcast",
       "url": "",
@@ -195,16 +175,6 @@
       "terminals": [
         "recS5bKTZwx1zGZWa"
       ]
-    },
-    {
-      "id": "recku49Qj0uIon8Bf",
-      "name": "Smartphone",
-      "url": "",
-      "category": "Autre",
-      "description": "Machine physique",
-      "color": "#888",
-      "emoji": "📱",
-      "terminals": []
     },
     {
       "id": "recnlrYj8kLm4dOI7",
