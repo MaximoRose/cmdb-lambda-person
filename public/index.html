@@ -103,31 +103,17 @@
     #infobulle .info-desc { font-size: 12px; color: var(--couleur-texte-secondaire); line-height: 1.6; margin-bottom: 6px; }
     #infobulle .info-cat  { font-family: var(--police-mono); font-size: 10px; color: var(--couleur-texte-discret); }
 
-    /* ── Légende des relations (bas gauche) ── */
-    #legende-relations {
-      position: absolute; bottom: 16px; left: 16px;
-      background: rgba(15,17,23,0.85); border: 1px solid var(--couleur-bordure-subtile);
-      border-radius: var(--rayon-bordure); padding: 10px 14px;
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    #legende-relations .item-relation {
+    /* ── Légendes (sous le graphe, dans le flux du document) ── */
+    .item-relation {
       display: flex; align-items: center; gap: 8px;
       font-size: 11px; font-family: var(--police-mono); color: var(--couleur-texte-secondaire);
     }
-
-    /* ── Légende des catégories (haut droite) ── */
-    #legende-categories {
-      position: absolute; top: 16px; right: 16px;
-      background: rgba(15,17,23,0.85); border: 1px solid var(--couleur-bordure-subtile);
-      border-radius: var(--rayon-bordure); padding: 12px 14px;
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    #legende-categories .item-categorie {
+    .item-categorie {
       display: flex; align-items: center; gap: 9px;
-      font-size: 11px; font-family: var(--police-mono); color: var(--couleur-texte-discret);
+      font-size: 11px; font-family: var(--police-mono); color: var(--couleur-texte-secondaire);
     }
-    #legende-categories .pastille-ronde  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    #legende-categories .pastille-carree { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; border: 1px solid #666; }
+    .pastille-ronde  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .pastille-carree { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; border: 1px solid #666; }
 
     footer {
       text-align: center; padding: 10px;
@@ -168,24 +154,36 @@
     <div class="info-cat"  id="info-cat"></div>
   </div>
 
-  <!-- Légende des relations : bas gauche -->
-  <div id="legende-relations" style="display:none">
-    <div class="item-relation">
-      <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#4f8ef7" stroke-width="1.5" stroke-dasharray="5,3"/><polygon points="26,4 20,1 20,7" fill="#4f8ef7"/></svg>
-      Authentification (login via)
-    </div>
-    <div class="item-relation">
-      <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#2ecc8a" stroke-width="1.5"/><polygon points="26,4 20,1 20,7" fill="#2ecc8a"/></svg>
-      Synchronisation de données
-    </div>
-    <div class="item-relation">
-      <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#f76f4f" stroke-width="1.5" stroke-dasharray="2,2"/><polygon points="26,4 20,1 20,7" fill="#f76f4f"/></svg>
-      Dépendance technique
+</div>
+
+<!-- Barre de légendes sous le graphe, dans le flux normal du document -->
+<div id="barre-legendes" style="display:none; gap:24px; padding:12px 16px; flex-wrap:wrap; align-items:flex-start; border-top:1px solid var(--couleur-bordure-subtile); margin:0 16px 0;">
+
+  <!-- Légende des relations -->
+  <div>
+    <div style="font-size:10px; font-family:var(--police-mono); color:var(--couleur-texte-discret); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">Relations</div>
+    <div id="legende-relations" style="display:flex; flex-direction:column; gap:7px;">
+      <div class="item-relation">
+        <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#4f8ef7" stroke-width="1.5" stroke-dasharray="5,3"/><polygon points="26,4 20,1 20,7" fill="#4f8ef7"/></svg>
+        Authentification (login via)
+      </div>
+      <div class="item-relation">
+        <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#2ecc8a" stroke-width="1.5"/><polygon points="26,4 20,1 20,7" fill="#2ecc8a"/></svg>
+        Synchronisation de données
+      </div>
+      <div class="item-relation">
+        <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#f76f4f" stroke-width="1.5" stroke-dasharray="2,2"/><polygon points="26,4 20,1 20,7" fill="#f76f4f"/></svg>
+        Dépendance technique
+      </div>
     </div>
   </div>
 
-  <!-- Légende des catégories : haut droite -->
-  <div id="legende-categories" style="display:none"></div>
+  <!-- Légende des catégories (générée dynamiquement) -->
+  <div>
+    <div style="font-size:10px; font-family:var(--police-mono); color:var(--couleur-texte-discret); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">Catégories</div>
+    <div id="legende-categories" style="display:flex; flex-direction:column; gap:7px;"></div>
+  </div>
+
 </div>
 
 <footer>glisser · zoomer · cliquer pour ouvrir</footer>
@@ -300,10 +298,9 @@ async function chargerDonnees() {
     // Construction de la légende des catégories à partir des données
     construireLegendeCategoriesServices();
 
-    // Affichage des légendes
+    // Affichage des légendes et de leur barre conteneur
     chargementElement.style.display  = 'none';
-    legendeRelations.style.display   = 'flex';
-    legendeCategories.style.display  = 'flex';
+    document.getElementById('barre-legendes').style.display = 'flex';
 
     // Diagnostic : affiche les terminaux résolus dans la console du navigateur
     console.log('Machines chargées :', listeMachines.map(m => m.id));
