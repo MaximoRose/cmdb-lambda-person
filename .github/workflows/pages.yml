@@ -2,11 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]        # déclenché à chaque push sur main
+    branches: [main]
   workflow_run:
     workflows: ["Fetch Airtable data"]
-    types: [completed]      # déclenché après chaque mise à jour de data.json
-  workflow_dispatch:        # déclenchement manuel possible
+    types: [completed]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -27,13 +27,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Injecte le hash du commit courant dans le meta-tag de index.html
+      # Cela permet de vérifier depuis la console navigateur quelle version est déployée
+      - name: Injecter le hash du commit dans index.html
+        run: |
+          HASH=$(git rev-parse --short HEAD)
+          MESSAGE=$(git log -1 --pretty=%s)
+          VALEUR="${HASH} — ${MESSAGE}"
+          sed -i "s|__GIT_COMMIT__|${VALEUR}|g" public/index.html
+          echo "✅ Hash injecté : ${VALEUR}"
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload public/ as artifact
+      - name: Upload public/ comme artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public/           # seul ce dossier est déployé
+          path: public/
 
       - name: Deploy to GitHub Pages
         id: deployment
