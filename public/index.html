@@ -241,7 +241,7 @@ function draw(){
   svcs.forEach(s => {
     const p=w2s(s.x,s.y), r=26*Math.min(scale,1.4);
     ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2);
-    ctx.fillStyle=s.color+'28'; ctx.fill();
+    ctx.fillStyle=s.color+'40'; ctx.fill();
     ctx.strokeStyle=s.color; ctx.lineWidth=1.5; ctx.stroke();
     const es=Math.max(13,Math.round(r*0.88));
     ctx.font=`${es}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
