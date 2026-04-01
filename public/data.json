@@ -1,0 +1,265 @@
+{
+  "generatedAt": "2026-04-01T17:47:41.524Z",
+  "machines": [
+    {
+      "id": "pc",
+      "name": "Ordinateur",
+      "emoji": "💻",
+      "desc": "it's a PC",
+      "color": "#555b70"
+    },
+    {
+      "id": "smartphone",
+      "name": "Smartphone",
+      "emoji": "📱",
+      "desc": "it's a Phone",
+      "color": "#555b70"
+    },
+    {
+      "id": "smart TV",
+      "name": "Télé",
+      "emoji": "📺",
+      "desc": "it's a TV",
+      "color": "#555b70"
+    }
+  ],
+  "services": [
+    {
+      "id": "rec2shze7KtZq1hK9",
+      "name": "PC portable",
+      "url": "",
+      "category": "Autre",
+      "description": "Machine physique",
+      "color": "#888",
+      "emoji": "💻",
+      "terminals": []
+    },
+    {
+      "id": "rec59Ra7HHa9xOlL0",
+      "name": "Messagerie Instantannée",
+      "url": "",
+      "category": "GAMAM",
+      "description": "WhatsApp",
+      "color": "#888",
+      "emoji": "💬",
+      "terminals": []
+    },
+    {
+      "id": "recCpuQ5BEcZP06ta",
+      "name": "OS Smartphone",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Android",
+      "color": "#888",
+      "emoji": "🧠",
+      "terminals": [
+        "receyOCVFkBE5URsb"
+      ]
+    },
+    {
+      "id": "recEDoXPsGN2OZAd0",
+      "name": "e-mail",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Gmail",
+      "color": "#888",
+      "emoji": "📧",
+      "terminals": [
+        "recS5bKTZwx1zGZWa",
+        "receyOCVFkBE5URsb"
+      ]
+    },
+    {
+      "id": "recErutKEj9lOIvOM",
+      "name": "Cookies web",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Les cookies sont définis par les sites que vous visitez. Ceopendant la plupart d'entre eux utilise des outils Google, qui permettent à Google de profiter de toutes les données de traffic.",
+      "color": "#888",
+      "emoji": "🍪",
+      "terminals": []
+    },
+    {
+      "id": "recFSs4jvGohGAuw0",
+      "name": "Galerie photos",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Google Photos",
+      "color": "#888",
+      "emoji": "🖼️",
+      "terminals": [
+        "recS5bKTZwx1zGZWa",
+        "receyOCVFkBE5URsb"
+      ]
+    },
+    {
+      "id": "recJufhbznF5ABEp0",
+      "name": "Bureautique",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Traitement de texte, tableur, etc. \nMicrosoft Office",
+      "color": "#888",
+      "emoji": "📄",
+      "terminals": []
+    },
+    {
+      "id": "recMWgicCxfwCf1Vs",
+      "name": "Navigateur web PC",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Google Chrome",
+      "color": "#888",
+      "emoji": "🌐",
+      "terminals": []
+    },
+    {
+      "id": "recNPjCtDGPptUCa1",
+      "name": "Smart TV",
+      "url": "",
+      "category": "Autre",
+      "description": "Machine Physique",
+      "color": "#888",
+      "emoji": "📺",
+      "terminals": []
+    },
+    {
+      "id": "recSG4kjHmjYiRmbH",
+      "name": "Podcast",
+      "url": "",
+      "category": "Autre",
+      "description": "",
+      "color": "#888",
+      "emoji": "🎧",
+      "terminals": []
+    },
+    {
+      "id": "recSOUgNfyWMSy44k",
+      "name": "Cartes",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Google Map",
+      "color": "#888",
+      "emoji": "🗺️",
+      "terminals": []
+    },
+    {
+      "id": "recSTqH3b0feAfWSU",
+      "name": "OS Smart TV",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Android",
+      "color": "#888",
+      "emoji": "🧠",
+      "terminals": [
+        "recfOsU3jaFAU4zim"
+      ]
+    },
+    {
+      "id": "recaCgXCm6zCprX1C",
+      "name": "Réseau Social",
+      "url": "",
+      "category": "GAMAM",
+      "description": "",
+      "color": "#888",
+      "emoji": "🫂",
+      "terminals": []
+    },
+    {
+      "id": "recbdulie5vKiHuSZ",
+      "name": "Navigateur web Smartphone",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Google Chrome",
+      "color": "#888",
+      "emoji": "🌐",
+      "terminals": []
+    },
+    {
+      "id": "reccSJhNMVON3lQ2p",
+      "name": "Actualités web",
+      "url": "",
+      "category": "Autre",
+      "description": "",
+      "color": "#888",
+      "emoji": "📰",
+      "terminals": []
+    },
+    {
+      "id": "recfzoYgLaACFvaBT",
+      "name": "OS PC",
+      "url": "",
+      "category": "GAMAM",
+      "description": "MIcrosoft",
+      "color": "#888",
+      "emoji": "🧠",
+      "terminals": [
+        "recS5bKTZwx1zGZWa"
+      ]
+    },
+    {
+      "id": "recku49Qj0uIon8Bf",
+      "name": "Smartphone",
+      "url": "",
+      "category": "Autre",
+      "description": "Machine physique",
+      "color": "#888",
+      "emoji": "📱",
+      "terminals": []
+    },
+    {
+      "id": "recnlrYj8kLm4dOI7",
+      "name": "Stockage fichiers",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Google drive",
+      "color": "#888",
+      "emoji": "📁",
+      "terminals": [
+        "recS5bKTZwx1zGZWa",
+        "receyOCVFkBE5URsb"
+      ]
+    },
+    {
+      "id": "recr0Kr3z9bRcvOdK",
+      "name": "Boutique en ligne",
+      "url": "",
+      "category": "Autre",
+      "description": "",
+      "color": "#888",
+      "emoji": "🛒",
+      "terminals": []
+    },
+    {
+      "id": "recs71MgQbZJFTbbu",
+      "name": "Plateforme vidéo",
+      "url": "",
+      "category": "GAMAM",
+      "description": "Youtube",
+      "color": "#888",
+      "emoji": "📹",
+      "terminals": []
+    }
+  ],
+  "relations": [
+    {
+      "source": "recEDoXPsGN2OZAd0",
+      "target": "recFSs4jvGohGAuw0",
+      "type": "auth"
+    },
+    {
+      "source": "recErutKEj9lOIvOM",
+      "target": "recEDoXPsGN2OZAd0",
+      "type": "sync"
+    },
+    {
+      "source": "recEDoXPsGN2OZAd0",
+      "target": "recnlrYj8kLm4dOI7",
+      "type": "auth"
+    },
+    {
+      "source": "recMWgicCxfwCf1Vs",
+      "target": "recfzoYgLaACFvaBT",
+      "type": "depends"
+    }
+  ]
+}
