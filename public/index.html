@@ -230,13 +230,43 @@ let filtreTerminalActif = 'tous';
 // ════════════════════════════════════════════════════════════════════════════
 async function chargerDonnees() {
   try {
+    console.log('⏳ Chargement de data.json…');
     const reponse = await fetch('data.json?t=' + Date.now());
+    console.log('📡 Réponse HTTP :', reponse.status, reponse.ok ? 'OK' : 'ERREUR');
     if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
     const donnees = await reponse.json();
 
     listeMachines  = donnees.machines  || [];
     listeServices  = donnees.services  || [];
     listeRelations = donnees.relations || [];
+
+    // ── Diagnostic console ──────────────────────────────────────────────────
+    console.group('📦 Données chargées');
+    console.log('🕐 Généré le :', donnees.generatedAt);
+    console.log('🖥️  Machines  :', listeMachines.length, listeMachines);
+    if (listeServices.length > 0) {
+      const premierService = listeServices[0];
+      console.log('🔗 1er service :', {
+        id:          premierService.id,
+        name:        premierService.name,
+        category:    premierService.category,
+        color:       premierService.color,
+        emoji:       premierService.emoji,
+        terminals:   premierService.terminals,
+        url:         premierService.url,
+      });
+    }
+    if (listeRelations.length > 0) {
+      const premiereRelation = listeRelations[0];
+      console.log('↔️  1re relation :', {
+        source: premiereRelation.source,
+        target: premiereRelation.target,
+        type:   premiereRelation.type,
+      });
+    } else {
+      console.warn('⚠️  Aucune relation trouvée dans data.json');
+    }
+    console.groupEnd();
 
     // Affichage de la date de dernière mise à jour
     const dateMaj = new Date(donnees.generatedAt);
@@ -515,11 +545,16 @@ function dessinerGraphe() {
     contexteDessin.stroke();
 
     // Emoji de la machine (dessiné après la forme → premier plan)
+    // On sauvegarde et restaure le contexte pour ne pas polluer fillStyle
+    contexteDessin.save();
     const tailleEmoji = Math.max(16, Math.round(22 * Math.min(niveauZoom, 1.4)));
-    contexteDessin.font         = `${tailleEmoji}px serif, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji`;
-    contexteDessin.textAlign    = 'center';
-    contexteDessin.textBaseline = 'middle';
+    contexteDessin.font              = `${tailleEmoji}px serif, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji`;
+    contexteDessin.textAlign         = 'center';
+    contexteDessin.textBaseline      = 'middle';
+    contexteDessin.globalAlpha       = 1;
+    contexteDessin.fillStyle         = 'black'; // requis pour que les emojis couleur s'affichent
     contexteDessin.fillText(machine.emoji, position.x, position.y);
+    contexteDessin.restore();
   });
 
   // ── 4. Nœuds des services (cercles) ──────────────────────────────────────
@@ -539,11 +574,16 @@ function dessinerGraphe() {
     contexteDessin.stroke();
 
     // Emoji du service (dessiné après le cercle → premier plan, couleurs vives)
+    // save/restore isole le fillStyle pour que l'emoji ne soit pas teint par la couleur du cercle
+    contexteDessin.save();
     const tailleEmoji = Math.max(13, Math.round(rayonCercle * 0.88));
-    contexteDessin.font         = `${tailleEmoji}px serif, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji`;
-    contexteDessin.textAlign    = 'center';
-    contexteDessin.textBaseline = 'middle';
+    contexteDessin.font              = `${tailleEmoji}px serif, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji`;
+    contexteDessin.textAlign         = 'center';
+    contexteDessin.textBaseline      = 'middle';
+    contexteDessin.globalAlpha       = 1;
+    contexteDessin.fillStyle         = 'black'; // requis pour que les emojis couleur s'affichent
     contexteDessin.fillText(service.emoji, position.x, position.y + 1);
+    contexteDessin.restore();
   });
 }
 
