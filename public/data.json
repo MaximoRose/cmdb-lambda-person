@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-01T19:01:28.574Z",
+  "generatedAt": "2026-04-01T19:03:14.379Z",
   "machines": [
     {
       "id": "pc",
@@ -175,6 +175,16 @@
       "terminals": [
         "recS5bKTZwx1zGZWa"
       ]
+    },
+    {
+      "id": "reciTcLf4qanZ21Ps",
+      "name": "e-mail",
+      "url": "",
+      "category": "SaaSEU",
+      "description": "Protonmail",
+      "color": "#888",
+      "emoji": "📧",
+      "terminals": []
     },
     {
       "id": "recnlrYj8kLm4dOI7",
