@@ -15,9 +15,9 @@ if (!TOKEN || !BASE_ID) {
 // ── Couleurs par catégorie ────────────────────────────────────────────────────
 // Modifiez ici pour ajuster les couleurs selon vos catégories Airtable
 const CATEGORY_COLORS = {
-  'GAMAM':  '#f76f4f',  // orange-rouge → services Google/Apple/Meta/Amazon/Microsoft
-  'SaaSEU': '#4f8ef7',  // bleu         → SaaS européens (Proton, etc.)
-  'Autre':  '#8b7cf8',  // violet       → autres services
+  'GAMAM':  '#f76f4f',
+  'SaaSEU': '#4f8ef7',
+  'Autre':  '#8b7cf8',
 };
 const DEFAULT_COLOR = '#888780';
 
@@ -47,8 +47,7 @@ async function fetchTable(tableName) {
 async function main() {
   console.log('📡  Récupération des données Airtable…');
 
-  // ── Machines (lu en premier pour résoudre les IDs dans terminals) ────────────
-  // Champs attendus : id (text: pc|smartphone|tv), name, emoji, description
+  // ── Machines ──────────────────────────────────────────────────────────────────
   const rawMachines = await fetchTable('Machines');
   const machines = rawMachines.map(r => ({
     id:    r.fields['id']          ?? r.id,
@@ -57,45 +56,35 @@ async function main() {
     desc:  r.fields['description'] ?? '',
     color: '#555b70',
   }));
-
-  // Table de correspondance : recordId Airtable → id fonctionnel (pc, smartphone…)
-  // Nécessaire car le champ "terminals" dans Services est un Link to Machines
-  // qui retourne des recordIds (ex: "recS5bKTZwx1zGZWa") et non les valeurs du champ "id"
-  const machineIdByRecordId = {};
-  rawMachines.forEach(r => {
-    machineIdByRecordId[r.id] = r.fields['id'] ?? r.id;
-  });
-  console.log('🖥️  Machines indexées :', machineIdByRecordId);
+  console.log(`🖥️  ${machines.length} machines chargées :`, machines.map(m => m.id));
 
   // ── Services ──────────────────────────────────────────────────────────────────
-  // Champs attendus : name, url, category (single select), description, emoji,
-  //                   terminals (Link to Machines — retourne des recordIds)
+  // Le champ "id (from terminals)" est un lookup Airtable qui retourne
+  // directement les valeurs texte (pc, smartphone, smart TV) — pas des recordIds.
+  // C'est une valeur tableau même pour un seul terminal.
   const rawServices = await fetchTable('Services');
   const services = rawServices.map(r => {
     const category = r.fields['category'] ?? '';
     const color    = CATEGORY_COLORS[category] ?? DEFAULT_COLOR;
 
-    // terminals est un Link to Machines → tableau de recordIds à résoudre
-    const rawTerminals = r.fields['terminals'] ?? [];
-    const terminals = rawTerminals
-      .map(recId => machineIdByRecordId[recId])
-      .filter(Boolean);
+    // Lecture du champ lookup "id (from terminals)"
+    // Airtable retourne ce champ sous forme de tableau de strings
+    const terminals = r.fields['id (from terminals)'] ?? [];
 
     return {
       id:          r.id,
       name:        r.fields['name']        ?? '',
-      url:         r.fields['url']         ?? '',
+      url:         r.fields['URL']         ?? '',
       category,
       description: r.fields['description'] ?? '',
       color,
       emoji:       r.fields['emoji']       ?? '🔗',
-      terminals,
+      terminals:   Array.isArray(terminals) ? terminals : [terminals],
     };
   });
+  console.log(`🔗  ${services.length} services chargés`);
 
   // ── Relations ─────────────────────────────────────────────────────────────────
-  // Champs attendus : source (Link to Services), target (Link to Services),
-  //                   type (single select: auth | sync | depends)
   const rawRelations = await fetchTable('Relations');
   const relations = rawRelations
     .map(r => ({
@@ -104,13 +93,13 @@ async function main() {
       type:   r.fields['type']        ?? 'depends',
     }))
     .filter(r => r.source && r.target);
+  console.log(`↔️  ${relations.length} relations chargées`);
 
   // ── Écriture ──────────────────────────────────────────────────────────────────
   const out = { generatedAt: new Date().toISOString(), machines, services, relations };
   const outPath = path.join(__dirname, '..', 'public', 'data.json');
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(out, null, 2), 'utf8');
-
   console.log(`✅  data.json écrit : ${machines.length} machines, ${services.length} services, ${relations.length} relations.`);
 }
 
