@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ma cartographie de services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1117; --bg2: #181c27; --bg3: #1e2235;
+      --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+      --text: #e8eaf0; --text2: #8b90a0; --text3: #555b70;
+      --accent: #4f8ef7; --radius: 10px;
+      --font-sans: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace;
+    }
+    body { background:var(--bg); color:var(--text); font-family:var(--font-sans); min-height:100vh; display:flex; flex-direction:column; }
+    header { padding:20px 28px 0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    .header-left h1 { font-size:18px; font-weight:500; letter-spacing:-0.3px; }
+    .header-left p  { font-size:12px; color:var(--text3); font-family:var(--font-mono); margin-top:2px; }
+    #last-update     { font-size:11px; color:var(--text3); font-family:var(--font-mono); }
+    .toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .toolbar label { font-size:12px; color:var(--text3); font-family:var(--font-mono); }
+    .toolbar select { font-family:var(--font-mono); font-size:12px; padding:6px 10px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--radius); color:var(--text); cursor:pointer; outline:none; }
+    .toolbar select:hover { border-color:rgba(255,255,255,0.25); }
+    .toolbar button { font-family:var(--font-mono); font-size:11px; padding:6px 12px; background:transparent; border:1px solid var(--border2); border-radius:var(--radius); color:var(--text2); cursor:pointer; }
+    .toolbar button:hover { background:var(--bg3); color:var(--text); }
+    #graph-wrap { flex:1; position:relative; margin:16px; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--bg2); min-height:500px; }
+    canvas { width:100%; height:100%; display:block; }
+    #loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--text3); font-family:var(--font-mono); font-size:13px; }
+    #loading .spinner { width:24px; height:24px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    #error-msg { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#f76f4f; font-family:var(--font-mono); font-size:13px; }
+    #tooltip { position:absolute; pointer-events:none; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--radius); padding:12px 15px; font-size:13px; display:none; max-width:230px; z-index:20; }
+    #tooltip .t-name { font-weight:500; font-size:14px; color:var(--text); margin-bottom:4px; }
+    #tooltip .t-url  { font-family:var(--font-mono); color:var(--accent); font-size:11px; margin-bottom:6px; word-break:break-all; }
+    #tooltip .t-desc { font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:6px; }
+    #tooltip .t-cat  { font-family:var(--font-mono); font-size:10px; color:var(--text3); }
+    #legend-rel { position:absolute; bottom:16px; left:16px; display:flex; gap:16px; flex-wrap:wrap; }
+    #legend-rel .leg { display:flex; align-items:center; gap:6px; font-size:11px; font-family:var(--font-mono); color:var(--text3); }
+    #legend-cat { position:absolute; top:16px; right:16px; background:rgba(15,17,23,0.85); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; display:flex; flex-direction:column; gap:8px; }
+    #legend-cat .cat { display:flex; align-items:center; gap:9px; font-size:11px; font-family:var(--font-mono); color:var(--text3); }
+    #legend-cat .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    #legend-cat .sq  { width:10px; height:10px; border-radius:2px; flex-shrink:0; border:1px solid #666; }
+    footer { text-align:center; padding:10px; font-size:11px; font-family:var(--font-mono); color:var(--text3); }
+    body.embedded header { padding:10px 14px 0; }
+    body.embedded #graph-wrap { margin:10px; }
+    body.embedded footer { display:none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Ma cartographie de services</h1>
+    <p id="last-update">chargement…</p>
+  </div>
+  <div class="toolbar">
+    <label>Terminal</label>
+    <select id="filter-select" onchange="applyFilter()" disabled>
+      <option value="all">Tous les services</option>
+    </select>
+    <button onclick="resetView()">⟳ Recentrer</button>
+  </div>
+</header>
+
+<div id="graph-wrap">
+  <canvas id="canvas"></canvas>
+  <div id="loading"><div class="spinner"></div>Chargement des données…</div>
+  <div id="error-msg"></div>
+  <div id="tooltip">
+    <div class="t-name" id="tt-name"></div>
+    <div class="t-url"  id="tt-url"></div>
+    <div class="t-desc" id="tt-desc"></div>
+    <div class="t-cat"  id="tt-cat"></div>
+  </div>
+  <div id="legend-rel" style="display:none">
+    <div class="leg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#4f8ef7" stroke-width="1.5" stroke-dasharray="5,3"/></svg>Authentification</div>
+    <div class="leg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#2ecc8a" stroke-width="1.5"/></svg>Synchronisation</div>
+    <div class="leg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#f76f4f" stroke-width="1.5" stroke-dasharray="2,2"/></svg>Dépendance</div>
+  </div>
+  <div id="legend-cat" style="display:none"></div>
+</div>
+
+<footer>glisser · zoomer · cliquer pour ouvrir</footer>
+
+<script>
+if (window.self !== window.top) document.body.classList.add('embedded');
+
+const urlParams = new URLSearchParams(window.location.search);
+const urlFilter = urlParams.get('filter') || 'all';
+
+// ── État global ───────────────────────────────────────────────────────────────
+let MACHINES=[], SERVICES=[], RELATIONS=[];
+let scale=1, ox=0, oy=0;
+let dragNode=null, isPan=false, panStart=null, hasMoved=false;
+let activeFilter='all';
+
+const canvas  = document.getElementById('canvas');
+const ctx     = canvas.getContext('2d');
+const wrap    = document.getElementById('graph-wrap');
+const tip     = document.getElementById('tooltip');
+const loading = document.getElementById('loading');
+const errMsg  = document.getElementById('error-msg');
+
+// ── Chargement data.json ──────────────────────────────────────────────────────
+async function loadData() {
+  try {
+    const res = await fetch('data.json?t=' + Date.now());
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    MACHINES  = json.machines  || [];
+    SERVICES  = json.services  || [];
+    RELATIONS = json.relations || [];
+
+    // Mise à jour de la date
+    const d = new Date(json.generatedAt);
+    document.getElementById('last-update').textContent =
+      'mis à jour · ' + d.toLocaleString('fr-FR', { dateStyle:'short', timeStyle:'short' });
+
+    // Alimentation du sélecteur de terminaux
+    const sel = document.getElementById('filter-select');
+    sel.innerHTML = '<option value="all">Tous les services</option>';
+    MACHINES.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = m.emoji + ' ' + m.name;
+      sel.appendChild(opt);
+    });
+    if (urlFilter) sel.value = urlFilter;
+    activeFilter = sel.value;
+    sel.disabled = false;
+
+    // Légende catégories dynamique
+    buildCategoryLegend();
+
+    loading.style.display = 'none';
+    document.getElementById('legend-rel').style.display = 'flex';
+    document.getElementById('legend-cat').style.display = 'flex';
+
+    initPositions(); draw();
+  } catch(e) {
+    loading.style.display = 'none';
+    errMsg.style.display = 'flex';
+    errMsg.innerHTML = '<span>⚠ Impossible de charger data.json</span><span style="font-size:11px;color:var(--text3)">' + e.message + '</span>';
+  }
+}
+
+function buildCategoryLegend() {
+  const seen = new Map();
+  SERVICES.forEach(s => { if (!seen.has(s.category)) seen.set(s.category, s.color); });
+  const legCat = document.getElementById('legend-cat');
+  legCat.innerHTML = [...seen.entries()].map(([cat, col]) =>
+    `<div class="cat"><div class="dot" style="background:${col}"></div>${cat}</div>`
+  ).join('') + `<div class="cat"><div class="sq"></div>Terminal physique</div>`;
+}
+
+// ── Filtre ────────────────────────────────────────────────────────────────────
+function visServices()  { return activeFilter==='all' ? SERVICES : SERVICES.filter(s=>s.terminals.includes(activeFilter)); }
+function visMachines()  { return activeFilter==='all' ? [] : MACHINES.filter(m=>m.id===activeFilter); }
+function visRelations() { const ids=new Set(visServices().map(s=>s.id)); return RELATIONS.filter(r=>ids.has(r.source)&&ids.has(r.target)); }
+
+function applyFilter() {
+  activeFilter = document.getElementById('filter-select').value;
+  initPositions(); draw();
+}
+
+// ── Positions ─────────────────────────────────────────────────────────────────
+function initPositions() {
+  const W=wrap.clientWidth, H=wrap.clientHeight, cx=W/2, cy=H/2;
+  const svcs=visServices(), mchs=visMachines();
+  svcs.forEach((s,i) => {
+    const a=(i/svcs.length)*Math.PI*2-Math.PI/2, r=Math.min(W,H)*0.30;
+    s.x=cx+Math.cos(a)*r; s.y=cy+Math.sin(a)*r;
+  });
+  mchs.forEach((m,i) => {
+    if(mchs.length===1){ m.x=cx; m.y=cy; return; }
+    const a=(i/mchs.length)*Math.PI*2-Math.PI/2, r=Math.min(W,H)*0.12;
+    m.x=cx+Math.cos(a)*r; m.y=cy+Math.sin(a)*r;
+  });
+  scale=1; ox=0; oy=0;
+}
+
+// ── Coordonnées ───────────────────────────────────────────────────────────────
+function w2s(x,y){ return {x:x*scale+ox, y:y*scale+oy}; }
+function s2w(x,y){ return {x:(x-ox)/scale, y:(y-oy)/scale}; }
+
+// ── Dessin ────────────────────────────────────────────────────────────────────
+function arrow(x1,y1,x2,y2,col,dash){
+  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy); if(len<1)return;
+  const ux=dx/len,uy=dy/len,r=28;
+  ctx.beginPath(); ctx.setLineDash(dash||[]);
+  ctx.moveTo(x1+ux*r,y1+uy*r); ctx.lineTo(x2-ux*r,y2-uy*r);
+  ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.stroke(); ctx.setLineDash([]);
+  const ex=x2-ux*r,ey=y2-uy*r,al=9,aw=4.5,ax=ex-ux*al,ay=ey-uy*al,px=-uy,py=ux;
+  ctx.beginPath(); ctx.moveTo(ex,ey);
+  ctx.lineTo(ax+px*aw,ay+py*aw); ctx.lineTo(ax-px*aw,ay-py*aw);
+  ctx.closePath(); ctx.fillStyle=col; ctx.fill();
+}
+
+function rrect(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r); ctx.closePath();
+}
+
+function draw(){
+  const W=wrap.clientWidth, H=wrap.clientHeight;
+  canvas.width=W; canvas.height=H; ctx.clearRect(0,0,W,H);
+  const svcs=visServices(), mchs=visMachines(), rels=visRelations();
+
+  mchs.forEach(m => svcs.forEach(s => {
+    if(!s.terminals.includes(m.id)) return;
+    const mp=w2s(m.x,m.y), sp=w2s(s.x,s.y);
+    ctx.beginPath(); ctx.setLineDash([3*scale,5*scale]);
+    ctx.moveTo(mp.x,mp.y); ctx.lineTo(sp.x,sp.y);
+    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke(); ctx.setLineDash([]);
+  }));
+
+  rels.forEach(r => {
+    const s=SERVICES.find(n=>n.id===r.source), t=SERVICES.find(n=>n.id===r.target); if(!s||!t)return;
+    const sp=w2s(s.x,s.y), tp=w2s(t.x,t.y);
+    const col=r.type==='auth'?'#4f8ef7':r.type==='sync'?'#2ecc8a':'#f76f4f';
+    const dash=r.type==='auth'?[5*scale,3*scale]:r.type==='depends'?[2*scale,2*scale]:[];
+    arrow(sp.x,sp.y,tp.x,tp.y,col,dash);
+  });
+
+  mchs.forEach(m => {
+    const p=w2s(m.x,m.y), rw=70*Math.min(scale,1.4), rh=50*Math.min(scale,1.4);
+    rrect(p.x-rw/2,p.y-rh/2,rw,rh,10);
+    ctx.fillStyle='rgba(85,91,112,0.18)'; ctx.fill();
+    ctx.strokeStyle='#555b70'; ctx.lineWidth=1.5; ctx.stroke();
+    const es=Math.max(16,Math.round(22*Math.min(scale,1.4)));
+    ctx.font=`${es}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(m.emoji,p.x,p.y);
+  });
+
+  svcs.forEach(s => {
+    const p=w2s(s.x,s.y), r=26*Math.min(scale,1.4);
+    ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2);
+    ctx.fillStyle=s.color+'28'; ctx.fill();
+    ctx.strokeStyle=s.color; ctx.lineWidth=1.5; ctx.stroke();
+    const es=Math.max(13,Math.round(r*0.88));
+    ctx.font=`${es}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(s.emoji,p.x,p.y+1);
+  });
+}
+
+// ── Interaction ───────────────────────────────────────────────────────────────
+function nodeAt(sx,sy){
+  const w=s2w(sx,sy);
+  for(const m of visMachines()){ if(w.x>=m.x-36&&w.x<=m.x+36&&w.y>=m.y-26&&w.y<=m.y+26) return m; }
+  return visServices().find(s=>{ const dx=s.x-w.x,dy=s.y-w.y; return Math.sqrt(dx*dx+dy*dy)<28; });
+}
+function cpos(e){ const r=canvas.getBoundingClientRect(),s=e.touches?e.touches[0]:e; return {x:s.clientX-r.left,y:s.clientY-r.top}; }
+
+canvas.addEventListener('mousedown', e=>{
+  const p=cpos(e); hasMoved=false;
+  const nd=nodeAt(p.x,p.y);
+  if(nd){ dragNode=nd; } else { isPan=true; panStart={x:p.x,y:p.y,ox,oy}; }
+});
+window.addEventListener('mousemove', e=>{
+  const p=cpos(e);
+  if(dragNode){ hasMoved=true; const w=s2w(p.x,p.y); dragNode.x=w.x; dragNode.y=w.y; draw(); canvas.style.cursor='grabbing'; tip.style.display='none'; return; }
+  if(isPan&&panStart){ hasMoved=true; ox=panStart.ox+(p.x-panStart.x); oy=panStart.oy+(p.y-panStart.y); draw(); canvas.style.cursor='grabbing'; return; }
+  const nd=nodeAt(p.x,p.y);
+  canvas.style.cursor=nd?'pointer':'default';
+  if(nd){
+    tip.style.display='block';
+    let left=p.x+16,top=p.y-10;
+    if(left+240>wrap.clientWidth) left=p.x-250;
+    if(top+130>wrap.clientHeight) top=wrap.clientHeight-140;
+    tip.style.left=left+'px'; tip.style.top=top+'px';
+    document.getElementById('tt-name').textContent=nd.name;
+    document.getElementById('tt-url').textContent=nd.url||'';
+    document.getElementById('tt-desc').textContent=nd.description||nd.desc||'';
+    document.getElementById('tt-cat').textContent=nd.category?'catégorie · '+nd.category:'';
+  } else { tip.style.display='none'; }
+});
+window.addEventListener('mouseup', ()=>{
+  if(!hasMoved&&dragNode&&dragNode.url) window.open(dragNode.url,'_blank');
+  dragNode=null; isPan=false; panStart=null; canvas.style.cursor='default'; tip.style.display='none';
+});
+canvas.addEventListener('wheel', e=>{
+  e.preventDefault();
+  const p=cpos(e),d=e.deltaY>0?0.9:1.1,ns=Math.min(Math.max(scale*d,0.3),3);
+  ox=p.x-(p.x-ox)*(ns/scale); oy=p.y-(p.y-oy)*(ns/scale); scale=ns; draw();
+},{passive:false});
+
+function resetView(){ scale=1; ox=0; oy=0; initPositions(); draw(); }
+window.addEventListener('resize',()=>{ initPositions(); draw(); });
+
+// ── Démarrage ─────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
