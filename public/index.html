@@ -344,9 +344,11 @@ function obtenirServicesVisibles() {
   return listeServices.filter(service => service.terminals.includes(filtreTerminalActif));
 }
 
-// Retourne les machines visibles (cachées en vue globale, visible lors d'un filtre)
+// Retourne les machines visibles :
+// - en vue globale : toutes les machines
+// - avec filtre actif : uniquement la machine sélectionnée
 function obtenirMachinesVisibles() {
-  if (filtreTerminalActif === 'tous') return [];
+  if (filtreTerminalActif === 'tous') return listeMachines;
   return listeMachines.filter(machine => machine.id === filtreTerminalActif);
 }
 
