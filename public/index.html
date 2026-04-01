@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ma cartographie de services</title>
+  <!-- Hash du dernier commit Git, injecté par le workflow pages.yml -->
+  <meta name="git-commit" content="__GIT_COMMIT__">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -230,6 +232,11 @@ let filtreTerminalActif = 'tous';
 // ════════════════════════════════════════════════════════════════════════════
 async function chargerDonnees() {
   try {
+    // Affichage de la version déployée (hash du dernier commit Git)
+    const metaCommit = document.querySelector('meta[name="git-commit"]');
+    const hashCommit = metaCommit ? metaCommit.getAttribute('content') : 'inconnu';
+    console.log('🔖 Version déployée (commit) :', hashCommit);
+
     console.log('⏳ Chargement de data.json…');
     const reponse = await fetch('data.json?t=' + Date.now());
     console.log('📡 Réponse HTTP :', reponse.status, reponse.ok ? 'OK' : 'ERREUR');
