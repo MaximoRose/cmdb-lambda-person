@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-01T19:03:14.379Z",
+  "generatedAt": "2026-04-01T19:12:01.026Z",
   "machines": [
     {
       "id": "pc",
@@ -30,7 +30,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "WhatsApp",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "💬",
       "terminals": []
     },
@@ -40,10 +40,10 @@
       "url": "",
       "category": "GAMAM",
       "description": "Android",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🧠",
       "terminals": [
-        "receyOCVFkBE5URsb"
+        "smartphone"
       ]
     },
     {
@@ -52,11 +52,11 @@
       "url": "",
       "category": "GAMAM",
       "description": "Gmail",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "📧",
       "terminals": [
-        "recS5bKTZwx1zGZWa",
-        "receyOCVFkBE5URsb"
+        "pc",
+        "smartphone"
       ]
     },
     {
@@ -65,7 +65,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "Les cookies sont définis par les sites que vous visitez. Ceopendant la plupart d'entre eux utilise des outils Google, qui permettent à Google de profiter de toutes les données de traffic.",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🍪",
       "terminals": []
     },
@@ -75,11 +75,11 @@
       "url": "",
       "category": "GAMAM",
       "description": "Google Photos",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🖼️",
       "terminals": [
-        "recS5bKTZwx1zGZWa",
-        "receyOCVFkBE5URsb"
+        "pc",
+        "smartphone"
       ]
     },
     {
@@ -88,7 +88,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "Traitement de texte, tableur, etc. \nMicrosoft Office",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "📄",
       "terminals": []
     },
@@ -98,7 +98,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "Google Chrome",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🌐",
       "terminals": []
     },
@@ -108,7 +108,7 @@
       "url": "",
       "category": "Autre",
       "description": "",
-      "color": "#888",
+      "color": "#8b7cf8",
       "emoji": "🎧",
       "terminals": []
     },
@@ -118,7 +118,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "Google Map",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🗺️",
       "terminals": []
     },
@@ -128,10 +128,10 @@
       "url": "",
       "category": "GAMAM",
       "description": "Android",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🧠",
       "terminals": [
-        "recfOsU3jaFAU4zim"
+        "smart TV"
       ]
     },
     {
@@ -140,7 +140,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🫂",
       "terminals": []
     },
@@ -150,7 +150,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "Google Chrome",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🌐",
       "terminals": []
     },
@@ -160,7 +160,7 @@
       "url": "",
       "category": "Autre",
       "description": "",
-      "color": "#888",
+      "color": "#8b7cf8",
       "emoji": "📰",
       "terminals": []
     },
@@ -170,10 +170,10 @@
       "url": "",
       "category": "GAMAM",
       "description": "MIcrosoft",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "🧠",
       "terminals": [
-        "recS5bKTZwx1zGZWa"
+        "pc"
       ]
     },
     {
@@ -182,7 +182,7 @@
       "url": "",
       "category": "SaaSEU",
       "description": "Protonmail",
-      "color": "#888",
+      "color": "#4f8ef7",
       "emoji": "📧",
       "terminals": []
     },
@@ -192,11 +192,11 @@
       "url": "",
       "category": "GAMAM",
       "description": "Google drive",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "📁",
       "terminals": [
-        "recS5bKTZwx1zGZWa",
-        "receyOCVFkBE5URsb"
+        "pc",
+        "smartphone"
       ]
     },
     {
@@ -205,7 +205,7 @@
       "url": "",
       "category": "Autre",
       "description": "",
-      "color": "#888",
+      "color": "#8b7cf8",
       "emoji": "🛒",
       "terminals": []
     },
@@ -215,7 +215,7 @@
       "url": "",
       "category": "GAMAM",
       "description": "Youtube",
-      "color": "#888",
+      "color": "#f76f4f",
       "emoji": "📹",
       "terminals": []
     }
