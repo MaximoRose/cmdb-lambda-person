@@ -8,293 +8,699 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0f1117; --bg2: #181c27; --bg3: #1e2235;
-      --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
-      --text: #e8eaf0; --text2: #8b90a0; --text3: #555b70;
-      --accent: #4f8ef7; --radius: 10px;
-      --font-sans: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace;
+      --couleur-fond-principal:    #0f1117;
+      --couleur-fond-secondaire:   #181c27;
+      --couleur-fond-tertiaire:    #1e2235;
+      --couleur-bordure-subtile:   rgba(255,255,255,0.08);
+      --couleur-bordure-normale:   rgba(255,255,255,0.14);
+      --couleur-texte-principal:   #e8eaf0;
+      --couleur-texte-secondaire:  #8b90a0;
+      --couleur-texte-discret:     #555b70;
+      --couleur-accent:            #4f8ef7;
+      --rayon-bordure:             10px;
+      --police-sans:               'DM Sans', sans-serif;
+      --police-mono:               'DM Mono', monospace;
     }
-    body { background:var(--bg); color:var(--text); font-family:var(--font-sans); min-height:100vh; display:flex; flex-direction:column; }
-    header { padding:20px 28px 0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-    .header-left h1 { font-size:18px; font-weight:500; letter-spacing:-0.3px; }
-    .header-left p  { font-size:12px; color:var(--text3); font-family:var(--font-mono); margin-top:2px; }
-    #last-update     { font-size:11px; color:var(--text3); font-family:var(--font-mono); }
-    .toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-    .toolbar label { font-size:12px; color:var(--text3); font-family:var(--font-mono); }
-    .toolbar select { font-family:var(--font-mono); font-size:12px; padding:6px 10px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--radius); color:var(--text); cursor:pointer; outline:none; }
-    .toolbar select:hover { border-color:rgba(255,255,255,0.25); }
-    .toolbar button { font-family:var(--font-mono); font-size:11px; padding:6px 12px; background:transparent; border:1px solid var(--border2); border-radius:var(--radius); color:var(--text2); cursor:pointer; }
-    .toolbar button:hover { background:var(--bg3); color:var(--text); }
-    #graph-wrap { flex:1; position:relative; margin:16px; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--bg2); min-height:500px; }
-    canvas { width:100%; height:100%; display:block; }
-    #loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--text3); font-family:var(--font-mono); font-size:13px; }
-    #loading .spinner { width:24px; height:24px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    #error-msg { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#f76f4f; font-family:var(--font-mono); font-size:13px; }
-    #tooltip { position:absolute; pointer-events:none; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--radius); padding:12px 15px; font-size:13px; display:none; max-width:230px; z-index:20; }
-    #tooltip .t-name { font-weight:500; font-size:14px; color:var(--text); margin-bottom:4px; }
-    #tooltip .t-url  { font-family:var(--font-mono); color:var(--accent); font-size:11px; margin-bottom:6px; word-break:break-all; }
-    #tooltip .t-desc { font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:6px; }
-    #tooltip .t-cat  { font-family:var(--font-mono); font-size:10px; color:var(--text3); }
-    #legend-rel { position:absolute; bottom:16px; left:16px; display:flex; gap:16px; flex-wrap:wrap; }
-    #legend-rel .leg { display:flex; align-items:center; gap:6px; font-size:11px; font-family:var(--font-mono); color:var(--text3); }
-    #legend-cat { position:absolute; top:16px; right:16px; background:rgba(15,17,23,0.85); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; display:flex; flex-direction:column; gap:8px; }
-    #legend-cat .cat { display:flex; align-items:center; gap:9px; font-size:11px; font-family:var(--font-mono); color:var(--text3); }
-    #legend-cat .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-    #legend-cat .sq  { width:10px; height:10px; border-radius:2px; flex-shrink:0; border:1px solid #666; }
-    footer { text-align:center; padding:10px; font-size:11px; font-family:var(--font-mono); color:var(--text3); }
-    body.embedded header { padding:10px 14px 0; }
-    body.embedded #graph-wrap { margin:10px; }
-    body.embedded footer { display:none; }
+
+    body {
+      background: var(--couleur-fond-principal);
+      color: var(--couleur-texte-principal);
+      font-family: var(--police-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── En-tête ── */
+    header {
+      padding: 20px 28px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .entete-titre h1 { font-size: 18px; font-weight: 500; letter-spacing: -0.3px; }
+    .entete-titre p  { font-size: 12px; color: var(--couleur-texte-discret); font-family: var(--police-mono); margin-top: 2px; }
+
+    /* ── Barre d'outils ── */
+    .barre-outils { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .barre-outils label  { font-size: 12px; color: var(--couleur-texte-discret); font-family: var(--police-mono); }
+    .barre-outils select {
+      font-family: var(--police-mono); font-size: 12px; padding: 6px 10px;
+      background: var(--couleur-fond-tertiaire); border: 1px solid var(--couleur-bordure-normale);
+      border-radius: var(--rayon-bordure); color: var(--couleur-texte-principal); cursor: pointer; outline: none;
+    }
+    .barre-outils select:hover { border-color: rgba(255,255,255,0.25); }
+    .barre-outils button {
+      font-family: var(--police-mono); font-size: 11px; padding: 6px 12px;
+      background: transparent; border: 1px solid var(--couleur-bordure-normale);
+      border-radius: var(--rayon-bordure); color: var(--couleur-texte-secondaire); cursor: pointer;
+    }
+    .barre-outils button:hover { background: var(--couleur-fond-tertiaire); color: var(--couleur-texte-principal); }
+
+    /* ── Zone du graphe ── */
+    #zone-graphe {
+      flex: 1; position: relative; margin: 16px;
+      border: 1px solid var(--couleur-bordure-subtile); border-radius: 14px;
+      overflow: hidden; background: var(--couleur-fond-secondaire); min-height: 500px;
+    }
+    canvas { width: 100%; height: 100%; display: block; }
+
+    /* ── Indicateur de chargement ── */
+    #indicateur-chargement {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: var(--couleur-texte-discret); font-family: var(--police-mono); font-size: 13px;
+    }
+    #indicateur-chargement .roue {
+      width: 24px; height: 24px;
+      border: 2px solid var(--couleur-bordure-normale); border-top-color: var(--couleur-accent);
+      border-radius: 50%; animation: rotation 0.8s linear infinite;
+    }
+    @keyframes rotation { to { transform: rotate(360deg); } }
+
+    /* ── Message d'erreur ── */
+    #message-erreur {
+      position: absolute; inset: 0; display: none; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+      color: #f76f4f; font-family: var(--police-mono); font-size: 13px;
+    }
+
+    /* ── Infobulle au survol ── */
+    #infobulle {
+      position: absolute; pointer-events: none;
+      background: var(--couleur-fond-tertiaire); border: 1px solid var(--couleur-bordure-normale);
+      border-radius: var(--rayon-bordure); padding: 12px 15px;
+      font-size: 13px; display: none; max-width: 230px; z-index: 20;
+    }
+    #infobulle .info-nom  { font-weight: 500; font-size: 14px; color: var(--couleur-texte-principal); margin-bottom: 4px; }
+    #infobulle .info-url  { font-family: var(--police-mono); color: var(--couleur-accent); font-size: 11px; margin-bottom: 6px; word-break: break-all; }
+    #infobulle .info-desc { font-size: 12px; color: var(--couleur-texte-secondaire); line-height: 1.6; margin-bottom: 6px; }
+    #infobulle .info-cat  { font-family: var(--police-mono); font-size: 10px; color: var(--couleur-texte-discret); }
+
+    /* ── Légende des relations (bas gauche) ── */
+    #legende-relations {
+      position: absolute; bottom: 16px; left: 16px;
+      display: flex; gap: 14px; flex-wrap: wrap;
+    }
+    #legende-relations .item-relation {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-family: var(--police-mono); color: var(--couleur-texte-discret);
+    }
+
+    /* ── Légende des catégories (haut droite) ── */
+    #legende-categories {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(15,17,23,0.85); border: 1px solid var(--couleur-bordure-subtile);
+      border-radius: var(--rayon-bordure); padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    #legende-categories .item-categorie {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 11px; font-family: var(--police-mono); color: var(--couleur-texte-discret);
+    }
+    #legende-categories .pastille-ronde  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    #legende-categories .pastille-carree { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; border: 1px solid #666; }
+
+    footer {
+      text-align: center; padding: 10px;
+      font-size: 11px; font-family: var(--police-mono); color: var(--couleur-texte-discret);
+    }
+
+    /* ── Mode intégré en iframe ── */
+    body.integre header   { padding: 10px 14px 0; }
+    body.integre #zone-graphe { margin: 10px; }
+    body.integre footer   { display: none; }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
+  <div class="entete-titre">
     <h1>Ma cartographie de services</h1>
-    <p id="last-update">chargement…</p>
+    <p id="horodatage-maj">chargement…</p>
   </div>
-  <div class="toolbar">
+  <div class="barre-outils">
     <label>Terminal</label>
-    <select id="filter-select" onchange="applyFilter()" disabled>
-      <option value="all">Tous les services</option>
+    <select id="selecteur-terminal" onchange="appliquerFiltre()" disabled>
+      <option value="tous">Tous les services</option>
     </select>
-    <button onclick="resetView()">⟳ Recentrer</button>
+    <button onclick="recentrerVue()">⟳ Recentrer</button>
   </div>
 </header>
 
-<div id="graph-wrap">
-  <canvas id="canvas"></canvas>
-  <div id="loading"><div class="spinner"></div>Chargement des données…</div>
-  <div id="error-msg"></div>
-  <div id="tooltip">
-    <div class="t-name" id="tt-name"></div>
-    <div class="t-url"  id="tt-url"></div>
-    <div class="t-desc" id="tt-desc"></div>
-    <div class="t-cat"  id="tt-cat"></div>
+<div id="zone-graphe">
+  <canvas id="canvas-graphe"></canvas>
+  <div id="indicateur-chargement"><div class="roue"></div>Chargement des données…</div>
+  <div id="message-erreur"></div>
+
+  <div id="infobulle">
+    <div class="info-nom"  id="info-nom"></div>
+    <div class="info-url"  id="info-url"></div>
+    <div class="info-desc" id="info-desc"></div>
+    <div class="info-cat"  id="info-cat"></div>
   </div>
-  <div id="legend-rel" style="display:none">
-    <div class="leg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#4f8ef7" stroke-width="1.5" stroke-dasharray="5,3"/></svg>Authentification</div>
-    <div class="leg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#2ecc8a" stroke-width="1.5"/></svg>Synchronisation</div>
-    <div class="leg"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#f76f4f" stroke-width="1.5" stroke-dasharray="2,2"/></svg>Dépendance</div>
+
+  <!-- Légende des relations : bas gauche -->
+  <div id="legende-relations" style="display:none">
+    <div class="item-relation">
+      <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#4f8ef7" stroke-width="1.5" stroke-dasharray="5,3"/><polygon points="26,4 20,1 20,7" fill="#4f8ef7"/></svg>
+      Authentification (login via)
+    </div>
+    <div class="item-relation">
+      <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#2ecc8a" stroke-width="1.5"/><polygon points="26,4 20,1 20,7" fill="#2ecc8a"/></svg>
+      Synchronisation de données
+    </div>
+    <div class="item-relation">
+      <svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="#f76f4f" stroke-width="1.5" stroke-dasharray="2,2"/><polygon points="26,4 20,1 20,7" fill="#f76f4f"/></svg>
+      Dépendance technique
+    </div>
   </div>
-  <div id="legend-cat" style="display:none"></div>
+
+  <!-- Légende des catégories : haut droite -->
+  <div id="legende-categories" style="display:none"></div>
 </div>
 
 <footer>glisser · zoomer · cliquer pour ouvrir</footer>
 
 <script>
-if (window.self !== window.top) document.body.classList.add('embedded');
+// ── Détection mode iframe ────────────────────────────────────────────────────
+if (window.self !== window.top) {
+  document.body.classList.add('integre');
+}
 
-const urlParams = new URLSearchParams(window.location.search);
-const urlFilter = urlParams.get('filter') || 'all';
+// ── Paramètre URL optionnel : ?filter=smartphone ─────────────────────────────
+const parametresUrl   = new URLSearchParams(window.location.search);
+const filtreInitialUrl = parametresUrl.get('filter') || 'tous';
 
-// ── État global ───────────────────────────────────────────────────────────────
-let MACHINES=[], SERVICES=[], RELATIONS=[];
-let scale=1, ox=0, oy=0;
-let dragNode=null, isPan=false, panStart=null, hasMoved=false;
-let activeFilter='all';
+// ── Références DOM ───────────────────────────────────────────────────────────
+const canvasElement        = document.getElementById('canvas-graphe');
+const contexteDessin       = canvasElement.getContext('2d');
+const zoneGraphe           = document.getElementById('zone-graphe');
+const infobulleElement     = document.getElementById('infobulle');
+const chargementElement    = document.getElementById('indicateur-chargement');
+const erreurElement        = document.getElementById('message-erreur');
+const legendeCategories    = document.getElementById('legende-categories');
+const legendeRelations     = document.getElementById('legende-relations');
 
-const canvas  = document.getElementById('canvas');
-const ctx     = canvas.getContext('2d');
-const wrap    = document.getElementById('graph-wrap');
-const tip     = document.getElementById('tooltip');
-const loading = document.getElementById('loading');
-const errMsg  = document.getElementById('error-msg');
+// ── Données globales (remplies après chargement de data.json) ────────────────
+let listeMachines  = [];
+let listeServices  = [];
+let listeRelations = [];
 
-// ── Chargement data.json ──────────────────────────────────────────────────────
-async function loadData() {
+// ── État de la caméra (zoom et déplacement) ───────────────────────────────────
+let niveauZoom   = 1;
+let decalageX    = 0;
+let decalageY    = 0;
+
+// ── État de l'interaction souris ─────────────────────────────────────────────
+let noeudEnCours      = null;   // nœud en cours de glissement
+let enModePan         = false;  // déplacement de la vue
+let originePan        = null;   // position de départ du pan
+let deplacement       = false;  // distingue clic simple vs glissement
+
+// ── Filtre actif ─────────────────────────────────────────────────────────────
+let filtreTerminalActif = 'tous';
+
+// ════════════════════════════════════════════════════════════════════════════
+// CHARGEMENT DES DONNÉES
+// ════════════════════════════════════════════════════════════════════════════
+async function chargerDonnees() {
   try {
-    const res = await fetch('data.json?t=' + Date.now());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    MACHINES  = json.machines  || [];
-    SERVICES  = json.services  || [];
-    RELATIONS = json.relations || [];
+    const reponse = await fetch('data.json?t=' + Date.now());
+    if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
+    const donnees = await reponse.json();
 
-    // Mise à jour de la date
-    const d = new Date(json.generatedAt);
-    document.getElementById('last-update').textContent =
-      'mis à jour · ' + d.toLocaleString('fr-FR', { dateStyle:'short', timeStyle:'short' });
+    listeMachines  = donnees.machines  || [];
+    listeServices  = donnees.services  || [];
+    listeRelations = donnees.relations || [];
+
+    // Affichage de la date de dernière mise à jour
+    const dateMaj = new Date(donnees.generatedAt);
+    document.getElementById('horodatage-maj').textContent =
+      'mis à jour · ' + dateMaj.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
 
     // Alimentation du sélecteur de terminaux
-    const sel = document.getElementById('filter-select');
-    sel.innerHTML = '<option value="all">Tous les services</option>';
-    MACHINES.forEach(m => {
-      const opt = document.createElement('option');
-      opt.value = m.id;
-      opt.textContent = m.emoji + ' ' + m.name;
-      sel.appendChild(opt);
+    const selecteur = document.getElementById('selecteur-terminal');
+    selecteur.innerHTML = '<option value="tous">Tous les services</option>';
+    listeMachines.forEach(machine => {
+      const option = document.createElement('option');
+      option.value       = machine.id;
+      option.textContent = machine.emoji + ' ' + machine.name;
+      selecteur.appendChild(option);
     });
-    if (urlFilter) sel.value = urlFilter;
-    activeFilter = sel.value;
-    sel.disabled = false;
 
-    // Légende catégories dynamique
-    buildCategoryLegend();
+    // Application du filtre venant de l'URL si présent
+    if (filtreInitialUrl !== 'tous') selecteur.value = filtreInitialUrl;
+    filtreTerminalActif = selecteur.value;
+    selecteur.disabled  = false;
 
-    loading.style.display = 'none';
-    document.getElementById('legend-rel').style.display = 'flex';
-    document.getElementById('legend-cat').style.display = 'flex';
+    // Construction de la légende des catégories à partir des données
+    construireLegendeCategoriesServices();
 
-    initPositions(); draw();
-  } catch(e) {
-    loading.style.display = 'none';
-    errMsg.style.display = 'flex';
-    errMsg.innerHTML = '<span>⚠ Impossible de charger data.json</span><span style="font-size:11px;color:var(--text3)">' + e.message + '</span>';
+    // Affichage des légendes
+    chargementElement.style.display  = 'none';
+    legendeRelations.style.display   = 'flex';
+    legendeCategories.style.display  = 'flex';
+
+    calculerPositions();
+    dessinerGraphe();
+
+  } catch (erreur) {
+    chargementElement.style.display = 'none';
+    erreurElement.style.display     = 'flex';
+    erreurElement.innerHTML =
+      '<span>⚠ Impossible de charger data.json</span>' +
+      '<span style="font-size:11px;color:var(--couleur-texte-discret)">' + erreur.message + '</span>';
   }
 }
 
-function buildCategoryLegend() {
-  const seen = new Map();
-  SERVICES.forEach(s => { if (!seen.has(s.category)) seen.set(s.category, s.color); });
-  const legCat = document.getElementById('legend-cat');
-  legCat.innerHTML = [...seen.entries()].map(([cat, col]) =>
-    `<div class="cat"><div class="dot" style="background:${col}"></div>${cat}</div>`
-  ).join('') + `<div class="cat"><div class="sq"></div>Terminal physique</div>`;
-}
-
-// ── Filtre ────────────────────────────────────────────────────────────────────
-function visServices()  { return activeFilter==='all' ? SERVICES : SERVICES.filter(s=>s.terminals.includes(activeFilter)); }
-function visMachines()  { return activeFilter==='all' ? [] : MACHINES.filter(m=>m.id===activeFilter); }
-function visRelations() { const ids=new Set(visServices().map(s=>s.id)); return RELATIONS.filter(r=>ids.has(r.source)&&ids.has(r.target)); }
-
-function applyFilter() {
-  activeFilter = document.getElementById('filter-select').value;
-  initPositions(); draw();
-}
-
-// ── Positions ─────────────────────────────────────────────────────────────────
-function initPositions() {
-  const W=wrap.clientWidth, H=wrap.clientHeight, cx=W/2, cy=H/2;
-  const svcs=visServices(), mchs=visMachines();
-  svcs.forEach((s,i) => {
-    const a=(i/svcs.length)*Math.PI*2-Math.PI/2, r=Math.min(W,H)*0.30;
-    s.x=cx+Math.cos(a)*r; s.y=cy+Math.sin(a)*r;
-  });
-  mchs.forEach((m,i) => {
-    if(mchs.length===1){ m.x=cx; m.y=cy; return; }
-    const a=(i/mchs.length)*Math.PI*2-Math.PI/2, r=Math.min(W,H)*0.12;
-    m.x=cx+Math.cos(a)*r; m.y=cy+Math.sin(a)*r;
-  });
-  scale=1; ox=0; oy=0;
-}
-
-// ── Coordonnées ───────────────────────────────────────────────────────────────
-function w2s(x,y){ return {x:x*scale+ox, y:y*scale+oy}; }
-function s2w(x,y){ return {x:(x-ox)/scale, y:(y-oy)/scale}; }
-
-// ── Dessin ────────────────────────────────────────────────────────────────────
-function arrow(x1,y1,x2,y2,col,dash){
-  const dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy); if(len<1)return;
-  const ux=dx/len,uy=dy/len,r=28;
-  ctx.beginPath(); ctx.setLineDash(dash||[]);
-  ctx.moveTo(x1+ux*r,y1+uy*r); ctx.lineTo(x2-ux*r,y2-uy*r);
-  ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.stroke(); ctx.setLineDash([]);
-  const ex=x2-ux*r,ey=y2-uy*r,al=9,aw=4.5,ax=ex-ux*al,ay=ey-uy*al,px=-uy,py=ux;
-  ctx.beginPath(); ctx.moveTo(ex,ey);
-  ctx.lineTo(ax+px*aw,ay+py*aw); ctx.lineTo(ax-px*aw,ay-py*aw);
-  ctx.closePath(); ctx.fillStyle=col; ctx.fill();
-}
-
-function rrect(x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
-  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
-  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r); ctx.closePath();
-}
-
-function draw(){
-  const W=wrap.clientWidth, H=wrap.clientHeight;
-  canvas.width=W; canvas.height=H; ctx.clearRect(0,0,W,H);
-  const svcs=visServices(), mchs=visMachines(), rels=visRelations();
-
-  mchs.forEach(m => svcs.forEach(s => {
-    if(!s.terminals.includes(m.id)) return;
-    const mp=w2s(m.x,m.y), sp=w2s(s.x,s.y);
-    ctx.beginPath(); ctx.setLineDash([3*scale,5*scale]);
-    ctx.moveTo(mp.x,mp.y); ctx.lineTo(sp.x,sp.y);
-    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke(); ctx.setLineDash([]);
-  }));
-
-  rels.forEach(r => {
-    const s=SERVICES.find(n=>n.id===r.source), t=SERVICES.find(n=>n.id===r.target); if(!s||!t)return;
-    const sp=w2s(s.x,s.y), tp=w2s(t.x,t.y);
-    const col=r.type==='auth'?'#4f8ef7':r.type==='sync'?'#2ecc8a':'#f76f4f';
-    const dash=r.type==='auth'?[5*scale,3*scale]:r.type==='depends'?[2*scale,2*scale]:[];
-    arrow(sp.x,sp.y,tp.x,tp.y,col,dash);
+// Construit la légende des catégories dynamiquement depuis les services chargés
+function construireLegendeCategoriesServices() {
+  const categoriesVues = new Map();
+  listeServices.forEach(service => {
+    if (!categoriesVues.has(service.category)) {
+      categoriesVues.set(service.category, service.color);
+    }
   });
 
-  mchs.forEach(m => {
-    const p=w2s(m.x,m.y), rw=70*Math.min(scale,1.4), rh=50*Math.min(scale,1.4);
-    rrect(p.x-rw/2,p.y-rh/2,rw,rh,10);
-    ctx.fillStyle='rgba(85,91,112,0.18)'; ctx.fill();
-    ctx.strokeStyle='#555b70'; ctx.lineWidth=1.5; ctx.stroke();
-    const es=Math.max(16,Math.round(22*Math.min(scale,1.4)));
-    ctx.font=`${es}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(m.emoji,p.x,p.y);
+  legendeCategories.innerHTML =
+    [...categoriesVues.entries()].map(([nomCategorie, couleur]) =>
+      `<div class="item-categorie">
+         <div class="pastille-ronde" style="background:${couleur}"></div>
+         ${nomCategorie}
+       </div>`
+    ).join('') +
+    `<div class="item-categorie">
+       <div class="pastille-carree"></div>
+       Terminal physique
+     </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// FILTRAGE
+// ════════════════════════════════════════════════════════════════════════════
+
+// Retourne les services visibles selon le filtre actif
+function obtenirServicesVisibles() {
+  if (filtreTerminalActif === 'tous') return listeServices;
+  return listeServices.filter(service => service.terminals.includes(filtreTerminalActif));
+}
+
+// Retourne les machines visibles (cachées en vue globale, visible lors d'un filtre)
+function obtenirMachinesVisibles() {
+  if (filtreTerminalActif === 'tous') return [];
+  return listeMachines.filter(machine => machine.id === filtreTerminalActif);
+}
+
+// Retourne les relations dont les deux extrémités sont visibles
+function obtenirRelationsVisibles() {
+  const idsServicesVisibles = new Set(obtenirServicesVisibles().map(s => s.id));
+  return listeRelations.filter(relation =>
+    idsServicesVisibles.has(relation.source) && idsServicesVisibles.has(relation.target)
+  );
+}
+
+function appliquerFiltre() {
+  filtreTerminalActif = document.getElementById('selecteur-terminal').value;
+  calculerPositions();
+  dessinerGraphe();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// POSITIONNEMENT DES NŒUDS
+// ════════════════════════════════════════════════════════════════════════════
+function calculerPositions() {
+  const largeur  = zoneGraphe.clientWidth;
+  const hauteur  = zoneGraphe.clientHeight;
+  const centreX  = largeur  / 2;
+  const centreY  = hauteur  / 2;
+  const rayon    = Math.min(largeur, hauteur) * 0.30;
+
+  const servicesVisibles = obtenirServicesVisibles();
+  const machinesVisibles = obtenirMachinesVisibles();
+
+  // Disposition des services en cercle
+  servicesVisibles.forEach((service, index) => {
+    const angle  = (index / servicesVisibles.length) * Math.PI * 2 - Math.PI / 2;
+    service.x = centreX + Math.cos(angle) * rayon;
+    service.y = centreY + Math.sin(angle) * rayon;
   });
 
-  svcs.forEach(s => {
-    const p=w2s(s.x,s.y), r=26*Math.min(scale,1.4);
-    ctx.beginPath(); ctx.arc(p.x,p.y,r,0,Math.PI*2);
-    ctx.fillStyle=s.color+'40'; ctx.fill();
-    ctx.strokeStyle=s.color; ctx.lineWidth=1.5; ctx.stroke();
-    const es=Math.max(13,Math.round(r*0.88));
-    ctx.font=`${es}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(s.emoji,p.x,p.y+1);
+  // Disposition des machines au centre (ou en petit cercle si plusieurs)
+  machinesVisibles.forEach((machine, index) => {
+    if (machinesVisibles.length === 1) {
+      machine.x = centreX;
+      machine.y = centreY;
+    } else {
+      const angle   = (index / machinesVisibles.length) * Math.PI * 2 - Math.PI / 2;
+      const rayonCentre = Math.min(largeur, hauteur) * 0.12;
+      machine.x = centreX + Math.cos(angle) * rayonCentre;
+      machine.y = centreY + Math.sin(angle) * rayonCentre;
+    }
+  });
+
+  // Réinitialisation de la caméra à chaque changement de filtre
+  niveauZoom = 1;
+  decalageX  = 0;
+  decalageY  = 0;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CONVERSION DE COORDONNÉES
+// ════════════════════════════════════════════════════════════════════════════
+
+// Convertit coordonnées monde → coordonnées écran
+function mondeVersEcran(x, y) {
+  return { x: x * niveauZoom + decalageX, y: y * niveauZoom + decalageY };
+}
+
+// Convertit coordonnées écran → coordonnées monde
+function ecranVersMonde(x, y) {
+  return { x: (x - decalageX) / niveauZoom, y: (y - decalageY) / niveauZoom };
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// DESSIN
+// ════════════════════════════════════════════════════════════════════════════
+
+// Dessine une flèche directionnelle entre deux nœuds
+function dessinerFleche(xDepart, yDepart, xArrivee, yArrivee, couleur, tirets) {
+  const deltaX    = xArrivee - xDepart;
+  const deltaY    = yArrivee - yDepart;
+  const longueur  = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  if (longueur < 1) return;
+
+  const unitX = deltaX / longueur;
+  const unitY = deltaY / longueur;
+  const rayonNoeud = 28;
+
+  // Trait de la flèche
+  contexteDessin.beginPath();
+  contexteDessin.setLineDash(tirets || []);
+  contexteDessin.moveTo(xDepart  + unitX * rayonNoeud, yDepart  + unitY * rayonNoeud);
+  contexteDessin.lineTo(xArrivee - unitX * rayonNoeud, yArrivee - unitY * rayonNoeud);
+  contexteDessin.strokeStyle = couleur;
+  contexteDessin.lineWidth   = 1.5;
+  contexteDessin.stroke();
+  contexteDessin.setLineDash([]);
+
+  // Pointe de la flèche
+  const xPointe     = xArrivee - unitX * rayonNoeud;
+  const yPointe     = yArrivee - unitY * rayonNoeud;
+  const longueurAile = 9;
+  const largeurAile  = 4.5;
+  const xBase = xPointe - unitX * longueurAile;
+  const yBase = yPointe - unitY * longueurAile;
+  const perpX = -unitY;
+  const perpY =  unitX;
+
+  contexteDessin.beginPath();
+  contexteDessin.moveTo(xPointe, yPointe);
+  contexteDessin.lineTo(xBase + perpX * largeurAile, yBase + perpY * largeurAile);
+  contexteDessin.lineTo(xBase - perpX * largeurAile, yBase - perpY * largeurAile);
+  contexteDessin.closePath();
+  contexteDessin.fillStyle = couleur;
+  contexteDessin.fill();
+}
+
+// Dessine un rectangle aux coins arrondis
+function dessinerRectangleArrondi(x, y, largeur, hauteur, rayon) {
+  contexteDessin.beginPath();
+  contexteDessin.moveTo(x + rayon, y);
+  contexteDessin.lineTo(x + largeur - rayon, y);
+  contexteDessin.arcTo(x + largeur, y, x + largeur, y + rayon, rayon);
+  contexteDessin.lineTo(x + largeur, y + hauteur - rayon);
+  contexteDessin.arcTo(x + largeur, y + hauteur, x + largeur - rayon, y + hauteur, rayon);
+  contexteDessin.lineTo(x + rayon, y + hauteur);
+  contexteDessin.arcTo(x, y + hauteur, x, y + hauteur - rayon, rayon);
+  contexteDessin.lineTo(x, y + rayon);
+  contexteDessin.arcTo(x, y, x + rayon, y, rayon);
+  contexteDessin.closePath();
+}
+
+// Fonction principale de rendu du graphe
+function dessinerGraphe() {
+  const largeurCanvas = zoneGraphe.clientWidth;
+  const hauteurCanvas = zoneGraphe.clientHeight;
+  canvasElement.width  = largeurCanvas;
+  canvasElement.height = hauteurCanvas;
+  contexteDessin.clearRect(0, 0, largeurCanvas, hauteurCanvas);
+
+  const servicesVisibles  = obtenirServicesVisibles();
+  const machinesVisibles  = obtenirMachinesVisibles();
+  const relationsVisibles = obtenirRelationsVisibles();
+
+  // ── 1. Lignes de connexion machine → service (quand un filtre est actif) ──
+  machinesVisibles.forEach(machine => {
+    servicesVisibles.forEach(service => {
+      if (!service.terminals.includes(machine.id)) return;
+      const posMachine = mondeVersEcran(machine.x, machine.y);
+      const posService = mondeVersEcran(service.x, service.y);
+      contexteDessin.beginPath();
+      contexteDessin.setLineDash([3 * niveauZoom, 5 * niveauZoom]);
+      contexteDessin.moveTo(posMachine.x, posMachine.y);
+      contexteDessin.lineTo(posService.x,  posService.y);
+      contexteDessin.strokeStyle = 'rgba(255,255,255,0.06)';
+      contexteDessin.lineWidth   = 1;
+      contexteDessin.stroke();
+      contexteDessin.setLineDash([]);
+    });
+  });
+
+  // ── 2. Flèches de relations entre services ────────────────────────────────
+  relationsVisibles.forEach(relation => {
+    const serviceSource = listeServices.find(s => s.id === relation.source);
+    const serviceCible  = listeServices.find(s => s.id === relation.target);
+    if (!serviceSource || !serviceCible) return;
+
+    const posSource = mondeVersEcran(serviceSource.x, serviceSource.y);
+    const posCible  = mondeVersEcran(serviceCible.x,  serviceCible.y);
+
+    const couleurRelation = relation.type === 'auth'    ? '#4f8ef7'
+                          : relation.type === 'sync'    ? '#2ecc8a'
+                          : '#f76f4f'; // depends
+
+    const tirets = relation.type === 'auth'    ? [5 * niveauZoom, 3 * niveauZoom]
+                 : relation.type === 'depends' ? [2 * niveauZoom, 2 * niveauZoom]
+                 : [];
+
+    dessinerFleche(posSource.x, posSource.y, posCible.x, posCible.y, couleurRelation, tirets);
+  });
+
+  // ── 3. Nœuds des machines (rectangles arrondis) ───────────────────────────
+  machinesVisibles.forEach(machine => {
+    const position   = mondeVersEcran(machine.x, machine.y);
+    const largeurRect = 70  * Math.min(niveauZoom, 1.4);
+    const hauteurRect = 50  * Math.min(niveauZoom, 1.4);
+    const rayonCoin   = 10;
+
+    // Fond du rectangle
+    dessinerRectangleArrondi(
+      position.x - largeurRect / 2,
+      position.y - hauteurRect / 2,
+      largeurRect, hauteurRect, rayonCoin
+    );
+    contexteDessin.fillStyle   = 'rgba(85,91,112,0.25)';
+    contexteDessin.fill();
+    contexteDessin.strokeStyle = '#888780';
+    contexteDessin.lineWidth   = 1.5;
+    contexteDessin.stroke();
+
+    // Emoji de la machine (dessiné après la forme → premier plan)
+    const tailleEmoji = Math.max(16, Math.round(22 * Math.min(niveauZoom, 1.4)));
+    contexteDessin.font         = `${tailleEmoji}px serif`;
+    contexteDessin.textAlign    = 'center';
+    contexteDessin.textBaseline = 'middle';
+    contexteDessin.fillText(machine.emoji, position.x, position.y);
+  });
+
+  // ── 4. Nœuds des services (cercles) ──────────────────────────────────────
+  servicesVisibles.forEach(service => {
+    const position   = mondeVersEcran(service.x, service.y);
+    const rayonCercle = 26 * Math.min(niveauZoom, 1.4);
+
+    // Fond coloré du cercle
+    contexteDessin.beginPath();
+    contexteDessin.arc(position.x, position.y, rayonCercle, 0, Math.PI * 2);
+    contexteDessin.fillStyle = service.color + '40'; // opacité 25%
+    contexteDessin.fill();
+
+    // Bordure colorée
+    contexteDessin.strokeStyle = service.color;
+    contexteDessin.lineWidth   = 1.5;
+    contexteDessin.stroke();
+
+    // Emoji du service (dessiné après le cercle → premier plan, couleurs vives)
+    const tailleEmoji = Math.max(13, Math.round(rayonCercle * 0.88));
+    contexteDessin.font         = `${tailleEmoji}px serif`;
+    contexteDessin.textAlign    = 'center';
+    contexteDessin.textBaseline = 'middle';
+    contexteDessin.fillText(service.emoji, position.x, position.y + 1);
   });
 }
 
-// ── Interaction ───────────────────────────────────────────────────────────────
-function nodeAt(sx,sy){
-  const w=s2w(sx,sy);
-  for(const m of visMachines()){ if(w.x>=m.x-36&&w.x<=m.x+36&&w.y>=m.y-26&&w.y<=m.y+26) return m; }
-  return visServices().find(s=>{ const dx=s.x-w.x,dy=s.y-w.y; return Math.sqrt(dx*dx+dy*dy)<28; });
-}
-function cpos(e){ const r=canvas.getBoundingClientRect(),s=e.touches?e.touches[0]:e; return {x:s.clientX-r.left,y:s.clientY-r.top}; }
+// ════════════════════════════════════════════════════════════════════════════
+// DÉTECTION DU NŒUD SOUS LE CURSEUR
+// ════════════════════════════════════════════════════════════════════════════
+function trouverNoeudSousCurseur(xEcran, yEcran) {
+  const positionMonde = ecranVersMonde(xEcran, yEcran);
 
-canvas.addEventListener('mousedown', e=>{
-  const p=cpos(e); hasMoved=false;
-  const nd=nodeAt(p.x,p.y);
-  if(nd){ dragNode=nd; } else { isPan=true; panStart={x:p.x,y:p.y,ox,oy}; }
+  // Test des machines (zone rectangulaire)
+  for (const machine of obtenirMachinesVisibles()) {
+    const demiLargeur = 36;
+    const demiHauteur = 26;
+    if (
+      positionMonde.x >= machine.x - demiLargeur &&
+      positionMonde.x <= machine.x + demiLargeur &&
+      positionMonde.y >= machine.y - demiHauteur &&
+      positionMonde.y <= machine.y + demiHauteur
+    ) return machine;
+  }
+
+  // Test des services (zone circulaire)
+  return obtenirServicesVisibles().find(service => {
+    const distanceX = service.x - positionMonde.x;
+    const distanceY = service.y - positionMonde.y;
+    return Math.sqrt(distanceX * distanceX + distanceY * distanceY) < 28;
+  });
+}
+
+// Extrait la position de la souris ou du doigt relativement au canvas
+function obtenirPositionEvenement(evenement) {
+  const rect   = canvasElement.getBoundingClientRect();
+  const source = evenement.touches ? evenement.touches[0] : evenement;
+  return { x: source.clientX - rect.left, y: source.clientY - rect.top };
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// GESTION DE L'INFOBULLE
+// ════════════════════════════════════════════════════════════════════════════
+function afficherInfobulle(noeud, xEcran, yEcran) {
+  infobulleElement.style.display = 'block';
+
+  // Positionnement intelligent (évite de sortir du canvas)
+  let posGauche = xEcran + 16;
+  let posHaut   = yEcran - 10;
+  if (posGauche + 240 > zoneGraphe.clientWidth)  posGauche = xEcran - 250;
+  if (posHaut   + 130 > zoneGraphe.clientHeight) posHaut   = zoneGraphe.clientHeight - 140;
+
+  infobulleElement.style.left = posGauche + 'px';
+  infobulleElement.style.top  = posHaut   + 'px';
+
+  document.getElementById('info-nom').textContent  = noeud.name        || '';
+  document.getElementById('info-url').textContent  = noeud.url         || '';
+  document.getElementById('info-desc').textContent = noeud.description || noeud.desc || '';
+  document.getElementById('info-cat').textContent  = noeud.category
+    ? 'catégorie · ' + noeud.category
+    : 'terminal physique';
+}
+
+function masquerInfobulle() {
+  infobulleElement.style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// INTERACTIONS SOURIS
+// ════════════════════════════════════════════════════════════════════════════
+canvasElement.addEventListener('mousedown', evenement => {
+  const position = obtenirPositionEvenement(evenement);
+  deplacement    = false;
+  const noeudCible = trouverNoeudSousCurseur(position.x, position.y);
+
+  if (noeudCible) {
+    // Début de glissement d'un nœud
+    noeudEnCours = noeudCible;
+  } else {
+    // Début de déplacement de la vue (pan)
+    enModePan  = true;
+    originePan = { x: position.x, y: position.y, decalageX, decalageY };
+  }
 });
-window.addEventListener('mousemove', e=>{
-  const p=cpos(e);
-  if(dragNode){ hasMoved=true; const w=s2w(p.x,p.y); dragNode.x=w.x; dragNode.y=w.y; draw(); canvas.style.cursor='grabbing'; tip.style.display='none'; return; }
-  if(isPan&&panStart){ hasMoved=true; ox=panStart.ox+(p.x-panStart.x); oy=panStart.oy+(p.y-panStart.y); draw(); canvas.style.cursor='grabbing'; return; }
-  const nd=nodeAt(p.x,p.y);
-  canvas.style.cursor=nd?'pointer':'default';
-  if(nd){
-    tip.style.display='block';
-    let left=p.x+16,top=p.y-10;
-    if(left+240>wrap.clientWidth) left=p.x-250;
-    if(top+130>wrap.clientHeight) top=wrap.clientHeight-140;
-    tip.style.left=left+'px'; tip.style.top=top+'px';
-    document.getElementById('tt-name').textContent=nd.name;
-    document.getElementById('tt-url').textContent=nd.url||'';
-    document.getElementById('tt-desc').textContent=nd.description||nd.desc||'';
-    document.getElementById('tt-cat').textContent=nd.category?'catégorie · '+nd.category:'';
-  } else { tip.style.display='none'; }
-});
-window.addEventListener('mouseup', ()=>{
-  if(!hasMoved&&dragNode&&dragNode.url) window.open(dragNode.url,'_blank');
-  dragNode=null; isPan=false; panStart=null; canvas.style.cursor='default'; tip.style.display='none';
-});
-canvas.addEventListener('wheel', e=>{
-  e.preventDefault();
-  const p=cpos(e),d=e.deltaY>0?0.9:1.1,ns=Math.min(Math.max(scale*d,0.3),3);
-  ox=p.x-(p.x-ox)*(ns/scale); oy=p.y-(p.y-oy)*(ns/scale); scale=ns; draw();
-},{passive:false});
 
-function resetView(){ scale=1; ox=0; oy=0; initPositions(); draw(); }
-window.addEventListener('resize',()=>{ initPositions(); draw(); });
+window.addEventListener('mousemove', evenement => {
+  const position = obtenirPositionEvenement(evenement);
+
+  if (noeudEnCours) {
+    // Glissement d'un nœud
+    deplacement = true;
+    const posMonde = ecranVersMonde(position.x, position.y);
+    noeudEnCours.x = posMonde.x;
+    noeudEnCours.y = posMonde.y;
+    dessinerGraphe();
+    canvasElement.style.cursor = 'grabbing';
+    masquerInfobulle();
+    return;
+  }
+
+  if (enModePan && originePan) {
+    // Déplacement de la vue
+    deplacement = true;
+    decalageX = originePan.decalageX + (position.x - originePan.x);
+    decalageY = originePan.decalageY + (position.y - originePan.y);
+    dessinerGraphe();
+    canvasElement.style.cursor = 'grabbing';
+    return;
+  }
+
+  // Survol : affichage de l'infobulle
+  const noeudSurvole = trouverNoeudSousCurseur(position.x, position.y);
+  canvasElement.style.cursor = noeudSurvole ? 'pointer' : 'default';
+
+  if (noeudSurvole) {
+    afficherInfobulle(noeudSurvole, position.x, position.y);
+  } else {
+    masquerInfobulle();
+  }
+});
+
+window.addEventListener('mouseup', evenement => {
+  // Clic simple sans déplacement → ouvre l'URL du service
+  if (!deplacement && noeudEnCours && noeudEnCours.url) {
+    window.open(noeudEnCours.url, '_blank');
+  }
+  noeudEnCours = null;
+  enModePan    = false;
+  originePan   = null;
+  canvasElement.style.cursor = 'default';
+  masquerInfobulle();
+});
+
+// Zoom à la molette
+canvasElement.addEventListener('wheel', evenement => {
+  evenement.preventDefault();
+  const position    = obtenirPositionEvenement(evenement);
+  const facteurZoom = evenement.deltaY > 0 ? 0.9 : 1.1;
+  const nouveauZoom = Math.min(Math.max(niveauZoom * facteurZoom, 0.3), 3);
+
+  // Zoom centré sur la position du curseur
+  decalageX = position.x - (position.x - decalageX) * (nouveauZoom / niveauZoom);
+  decalageY = position.y - (position.y - decalageY) * (nouveauZoom / niveauZoom);
+  niveauZoom = nouveauZoom;
+  dessinerGraphe();
+}, { passive: false });
+
+// ════════════════════════════════════════════════════════════════════════════
+// UTILITAIRES
+// ════════════════════════════════════════════════════════════════════════════
+
+// Réinitialise la vue et repositionne tous les nœuds
+function recentrerVue() {
+  calculerPositions();
+  dessinerGraphe();
+}
+
+// Redessine lors d'un redimensionnement de la fenêtre
+window.addEventListener('resize', () => {
+  calculerPositions();
+  dessinerGraphe();
+});
 
 // ── Démarrage ─────────────────────────────────────────────────────────────────
-loadData();
+chargerDonnees();
 </script>
 </body>
 </html>
