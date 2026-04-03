@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-03T07:14:49.210Z",
+  "generatedAt": "2026-04-03T08:35:26.145Z",
   "machines": [
     {
       "id": "pc",
@@ -29,7 +29,7 @@
       "name": "Messagerie Instantannée",
       "url": "",
       "category": "GAMAM",
-      "description": "WhatsApp",
+      "description": ". WhatsApp #1 in Europe & USA",
       "color": "#f76f4f",
       "emoji": "💬",
       "terminals": []
@@ -39,7 +39,7 @@
       "name": "OS Smartphone",
       "url": "",
       "category": "GAMAM",
-      "description": "Android",
+      "description": ". Android (Google) : 67%\n. iOS (Apple) : 32%\n",
       "color": "#f76f4f",
       "emoji": "🧠",
       "terminals": [
@@ -51,13 +51,10 @@
       "name": "e-mail",
       "url": "https://mail.google.com/mail/u/0/?hl=it#inbox",
       "category": "GAMAM",
-      "description": "Gmail",
+      "description": ". Apple Mail : 54% des parts de marchés.\n. Gmail : 31%\n",
       "color": "#f76f4f",
       "emoji": "📧",
-      "terminals": [
-        "pc",
-        "smartphone"
-      ]
+      "terminals": []
     },
     {
       "id": "recErutKEj9lOIvOM",
@@ -77,17 +74,14 @@
       "description": "Google Photos",
       "color": "#f76f4f",
       "emoji": "🖼️",
-      "terminals": [
-        "pc",
-        "smartphone"
-      ]
+      "terminals": []
     },
     {
       "id": "recJufhbznF5ABEp0",
-      "name": "Bureautique",
+      "name": "Logiciels Bureautique",
       "url": "",
       "category": "GAMAM",
-      "description": "Traitement de texte, tableur, etc. \nMicrosoft Office",
+      "description": ". Google Apps ~50%\n. Microsoft Office ~45%",
       "color": "#f76f4f",
       "emoji": "📄",
       "terminals": []
@@ -97,18 +91,18 @@
       "name": "Navigateur web PC",
       "url": "",
       "category": "GAMAM",
-      "description": "Google Chrome",
+      "description": ". Google Chrome : 78%\n. Microsoft Edge : 8%",
       "color": "#f76f4f",
       "emoji": "🌐",
       "terminals": []
     },
     {
       "id": "recSG4kjHmjYiRmbH",
-      "name": "Podcast",
+      "name": "Plateforme Musique",
       "url": "",
-      "category": "Autre",
-      "description": "",
-      "color": "#8b7cf8",
+      "category": "SaaSEU",
+      "description": "Spotify : 34% des parts des marché.",
+      "color": "#4f8ef7",
       "emoji": "🎧",
       "terminals": []
     },
@@ -126,9 +120,9 @@
       "id": "recSTqH3b0feAfWSU",
       "name": "OS Smart TV",
       "url": "",
-      "category": "GAMAM",
+      "category": "Autre",
       "description": "Android",
-      "color": "#f76f4f",
+      "color": "#8b7cf8",
       "emoji": "🧠",
       "terminals": [
         "smart TV"
@@ -139,7 +133,7 @@
       "name": "Réseau Social",
       "url": "",
       "category": "GAMAM",
-      "description": "",
+      "description": ". Facebook : 75%",
       "color": "#f76f4f",
       "emoji": "🫂",
       "terminals": []
@@ -149,7 +143,7 @@
       "name": "Navigateur web Smartphone",
       "url": "",
       "category": "GAMAM",
-      "description": "Google Chrome",
+      "description": ". Google Chrome : 70%\n. Safari : ~20%\n",
       "color": "#f76f4f",
       "emoji": "🌐",
       "terminals": []
@@ -169,7 +163,7 @@
       "name": "OS PC",
       "url": "",
       "category": "GAMAM",
-      "description": "MIcrosoft",
+      "description": ". Microsoft : 61%\n. Apple : 9%\n",
       "color": "#f76f4f",
       "emoji": "🧠",
       "terminals": [
@@ -177,27 +171,14 @@
       ]
     },
     {
-      "id": "reciTcLf4qanZ21Ps",
-      "name": "e-mail",
-      "url": "",
-      "category": "SaaSEU",
-      "description": "Protonmail",
-      "color": "#4f8ef7",
-      "emoji": "📧",
-      "terminals": []
-    },
-    {
       "id": "recnlrYj8kLm4dOI7",
       "name": "Stockage fichiers",
       "url": "https://drive.google.com/drive/u/0/",
       "category": "GAMAM",
-      "description": "Google drive",
+      "description": ". Amazon : 28%\n. Microsoft Azure : 21%\n. Google : 14%\n",
       "color": "#f76f4f",
       "emoji": "📁",
-      "terminals": [
-        "pc",
-        "smartphone"
-      ]
+      "terminals": []
     },
     {
       "id": "recr0Kr3z9bRcvOdK",
@@ -233,6 +214,36 @@
     },
     {
       "source": "recEDoXPsGN2OZAd0",
+      "target": "recSG4kjHmjYiRmbH",
+      "type": "auth"
+    },
+    {
+      "source": "recEDoXPsGN2OZAd0",
+      "target": "recs71MgQbZJFTbbu",
+      "type": "auth"
+    },
+    {
+      "source": "recbdulie5vKiHuSZ",
+      "target": "recCpuQ5BEcZP06ta",
+      "type": "depends"
+    },
+    {
+      "source": "recEDoXPsGN2OZAd0",
+      "target": "recSOUgNfyWMSy44k",
+      "type": "auth"
+    },
+    {
+      "source": "reccSJhNMVON3lQ2p",
+      "target": "recErutKEj9lOIvOM",
+      "type": "sync"
+    },
+    {
+      "source": "recEDoXPsGN2OZAd0",
+      "target": "recFSs4jvGohGAuw0",
+      "type": "auth"
+    },
+    {
+      "source": "recEDoXPsGN2OZAd0",
       "target": "recnlrYj8kLm4dOI7",
       "type": "auth"
     },
@@ -240,6 +251,11 @@
       "source": "recMWgicCxfwCf1Vs",
       "target": "recfzoYgLaACFvaBT",
       "type": "depends"
+    },
+    {
+      "source": "recr0Kr3z9bRcvOdK",
+      "target": "recErutKEj9lOIvOM",
+      "type": "sync"
     }
   ]
 }
